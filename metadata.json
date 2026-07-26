@@ -1,0 +1,6 @@
+{
+  "name": "FreshKeeper AI",
+  "description": "Smart household food waste reduction app with food item tracking, expiry reminders, AI recipe generator, and shopping lists.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
