@@ -51,18 +51,26 @@ export const AddFoodModal: React.FC<AddFoodModalProps> = ({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ itemName: name, category }),
       });
-      const data = await res.json();
-      if (data.estimatedDays) {
-        setExpiryDate(getRelativeDate(data.estimatedDays));
-      }
-      if (data.suggestedCategory && CATEGORIES.includes(data.suggestedCategory as Category)) {
-        setCategory(data.suggestedCategory as Category);
-      }
-      if (data.storageTip) {
-        setAiStorageTip(data.storageTip);
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const data = await res.json();
+        if (data.estimatedDays) {
+          setExpiryDate(getRelativeDate(data.estimatedDays));
+        }
+        if (data.suggestedCategory && CATEGORIES.includes(data.suggestedCategory as Category)) {
+          setCategory(data.suggestedCategory as Category);
+        }
+        if (data.storageTip) {
+          setAiStorageTip(data.storageTip);
+        }
+      } else {
+        setExpiryDate(getRelativeDate(7));
+        setAiStorageTip("Keep in a cool, dry place or refrigerate for maximum freshness.");
       }
     } catch (err) {
       console.error("AI Estimation failed:", err);
+      setExpiryDate(getRelativeDate(7));
+      setAiStorageTip("Keep in a cool, dry place or refrigerate for maximum freshness.");
     } finally {
       setAiLoading(false);
     }

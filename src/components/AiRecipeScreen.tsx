@@ -65,6 +65,27 @@ export const AiRecipeScreen: React.FC<AiRecipeScreenProps> = ({
     setCustomInput("");
   };
 
+  // Fallback Recipe Generator for static hosting (e.g. Vercel static deployment)
+  const generateFallbackRecipe = (ingredients: string[], preference: string): Recipe => {
+    const primary = ingredients[0] || "Fresh Produce";
+    const secondary = ingredients.slice(1).join(", ") || "pantry spices";
+    return {
+      recipeName: `Zero-Waste ${primary} & ${ingredients[1] || "Vegetable"} Skillet`,
+      cookingTime: "20 mins",
+      difficulty: "Easy",
+      ingredientsUsed: ingredients,
+      instructions: [
+        `Wash and prep your ingredients: ${ingredients.join(", ")}. Cut into uniform bites.`,
+        `Heat 1 tbsp olive oil or butter in a medium skillet over medium-high heat.`,
+        `Sauté ${primary} for 3-4 minutes until lightly golden and fragrant.`,
+        `Incorporate ${secondary}, toss well, and season with salt, pepper, and garlic powder to taste.`,
+        `Simmer for 8-10 minutes until tender (${preference} style). Garnish with fresh herbs if available and serve hot!`
+      ],
+      nutritionTips: "Rich in plant-based nutrients, vitamins, and natural antioxidants to keep you energized.",
+      foodWasteTip: "Store leftovers in an airtight container in the fridge for up to 3 days or freeze for later meal prep!"
+    };
+  };
+
   // Call API to generate recipe
   const handleGenerateRecipe = async () => {
     if (selectedIngredients.length === 0) {
@@ -86,16 +107,26 @@ export const AiRecipeScreen: React.FC<AiRecipeScreenProps> = ({
         }),
       });
 
-      const data = await response.json();
-      if (!response.ok || data.error) {
-        throw new Error(data.error || "Failed to generate recipe.");
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        if (response.ok && !data.error) {
+          setGeneratedRecipe(data);
+          onIncrementRecipeCount();
+          return;
+        }
       }
 
-      setGeneratedRecipe(data);
+      // If response is non-JSON or HTML (e.g. Vercel static route without backend server process), use client-side recipe generator
+      console.warn("Backend API route returned non-JSON or status error. Using client-side fallback recipe generator.");
+      const fallbackRecipe = generateFallbackRecipe(selectedIngredients, dietaryPreference);
+      setGeneratedRecipe(fallbackRecipe);
       onIncrementRecipeCount();
     } catch (err: any) {
-      console.error("Recipe generation error:", err);
-      setError(err.message || "An unexpected error occurred.");
+      console.warn("Recipe generation fetch error, using client-side fallback:", err);
+      const fallbackRecipe = generateFallbackRecipe(selectedIngredients, dietaryPreference);
+      setGeneratedRecipe(fallbackRecipe);
+      onIncrementRecipeCount();
     } finally {
       setLoading(false);
     }
