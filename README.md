@@ -123,11 +123,20 @@ npm start
 
 ## 📱 Application Preview & Screenshots
 
-* **Home Dashboard**: Quick overview of expiring supplies, total inventory counts, quick AI recipe triggers, and recent household activity logs.
-* **Inventory View**: Detailed filterable list of all items in Fridge, Freezer, and Pantry with color-coded expiry badges.
-* **AI Recipes**: Interactive chef console for generating recipes based on available items.
-* **Shopping List**: Smart checklist with auto-restock suggestions and cost estimations.
-* **Authentication & Profile**: Complete user management, household roles, and sustainability impact tracking.
+### 1. Home Dashboard & Expiry Alerts
+Overview of household inventory metrics, expiring item notifications, and activity tracking.
+
+![FreshKeeper AI Dashboard](./public/screenshots/dashboard_preview.jpg)
+
+### 2. Gemini AI Recipe Generator
+Zero-waste chef console that generates custom recipes based on selected pantry ingredients.
+
+![FreshKeeper AI Recipe Generator](./public/screenshots/recipes_preview.jpg)
+
+### 3. Inventory & Smart Shopping Manager
+Filterable food inventory breakdown across Fridge, Freezer, and Pantry with color-coded shelf life badges.
+
+![FreshKeeper AI Food Inventory](./public/screenshots/inventory_preview.jpg)
 
 ---
 
